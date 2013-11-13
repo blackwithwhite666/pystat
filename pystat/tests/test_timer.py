@@ -28,3 +28,10 @@ class TestTimer(TestCase):
         self.timer.add(1.0)
         self.timer.add(1.0)
         self.assertEqual(2, len(self.timer))
+
+    def test_query(self):
+        self.timer.add(1.0)
+        self.timer.add(1.0)
+        self.timer.add(2.0)
+        self.assertEqual(1.0, self.timer.query(0.5))
+        self.assertEqual(2.0, self.timer.query(0.95))

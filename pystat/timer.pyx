@@ -39,20 +39,30 @@ cdef extern from "cm_timer.h":
 cdef class Timer(object):
     cdef timer *_c_timer
     cdef int _initialized
+    cdef object _quantiles
+    cdef double *_c_quantiles
 
-    def __cinit__(self, double eps=0.01):
+    def __cinit__(self, double eps=0.01, object quantiles=None):
+        self._initialized = -1
         # These are the quantiles we track
-        cdef double *quantiles = [0.5, 0.95, 0.99]
+        self._quantiles = tuple(quantiles or [0.5, 0.95, 0.99])
+        self._c_quantiles = <double *>malloc(sizeof(double) * len(self._quantiles))
+        if self._c_quantiles is NULL:
+            raise MemoryError("Can't allocate quantiles")
+        for i in range(len(self._quantiles)):
+            self._c_quantiles[i] = self._quantiles[i]
         self._c_timer = <timer *>malloc(sizeof(timer))
         if self._c_timer is NULL:
             raise MemoryError("Can't create timer struct")
-        self._initialized = init_timer(eps, quantiles, 3, self._c_timer)
+        self._initialized = init_timer(eps, self._c_quantiles, 3, self._c_timer)
         assert self._initialized == 0
 
     def add(self, double sample):
         assert timer_add_sample(self._c_timer, sample) == 0
 
     def query(self, double quantile=0.95):
+        if quantile not in self._quantiles:
+            raise ValueError('Unknown quantile "{0!r}" given'.format(quantile))
         return timer_query(self._c_timer, quantile)
 
     def __int__(self):
@@ -82,6 +92,11 @@ cdef class Timer(object):
     def __repr__(self):
         return ('<{0}(count={2.count}, mean={2.mean}) at {1}>'.
                 format(self.__class__.__name__, hex(id(self)), self))
+
+    property quantiles:
+
+        def __get__(self):
+            return self._quantiles
 
     property mean:
 
@@ -123,3 +138,5 @@ cdef class Timer(object):
             if self._initialized == 0:
                 destroy_timer(self._c_timer)
             free(self._c_timer)
+        if self._c_quantiles is not NULL:
+            free(self._c_quantiles)
