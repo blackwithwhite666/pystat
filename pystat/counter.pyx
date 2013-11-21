@@ -3,7 +3,7 @@ from libc.stdlib cimport malloc, free
 
 cdef extern from "stdint.h" nogil:
 
-    ctypedef unsigned int uint64_t
+    ctypedef unsigned long uint64_t
 
 
 cdef extern from "cm_counter.h":
@@ -26,6 +26,13 @@ cdef extern from "cm_counter.h":
     double counter_max(counter *c_counter)
 
 
+def recreate_counter(tuple t):
+    """Restore pickled set."""
+    cdef Counter c = Counter()
+    c.load(t)
+    return c
+
+
 cdef class Counter(object):
     cdef counter *_c_counter
 
@@ -41,6 +48,39 @@ cdef class Counter(object):
 
     cpdef add(self, double sample=1.0):
         assert counter_add_sample(self._c_counter, sample) == 0
+
+    cdef tuple dump(self):
+        return (
+            self._c_counter.count,
+            self._c_counter.sum,
+            self._c_counter.squared_sum,
+            self._c_counter.min,
+            self._c_counter.max,
+        )
+
+    cdef load(self, tuple t):
+        self._c_counter.count = t[0]
+        self._c_counter.sum = t[1]
+        self._c_counter.squared_sum = t[2]
+        self._c_counter.min = t[3]
+        self._c_counter.max = t[4]
+
+    def union(self, Counter other):
+        """Return union of two counters."""
+        cdef Counter c = Counter()
+        cdef counter *this, *that, *res
+        this = self._c_counter
+        that = other._c_counter
+        res = c._c_counter
+        res.count = this.count + that.count
+        res.sum = this.sum + that.sum
+        res.squared_sum = this.squared_sum + that.squared_sum
+        res.min = this.min if this.min < that.min else that.min
+        res.max = this.max if this.max > that.max else that.max
+        return c
+
+    def __or__(self, Counter other):
+        return self.union(other)
 
     def __int__(self):
         return int(self.sum)
@@ -65,6 +105,9 @@ cdef class Counter(object):
             return 0
         else:
             return 1
+
+    def __reduce__(self):
+        return (recreate_counter, (self.dump(), ))
 
     def __repr__(self):
         return ('<{0}(count={2.count}, sum={2.sum}) at {1}>'.

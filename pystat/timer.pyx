@@ -4,7 +4,7 @@ from libc.stdlib cimport malloc, free
 cdef extern from "stdint.h" nogil:
 
     ctypedef unsigned int uint32_t
-    ctypedef unsigned int uint64_t
+    ctypedef unsigned long uint64_t
 
 
 cdef extern from "cm_quantile.h":
