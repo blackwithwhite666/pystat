@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.2.1
+-----
+
+- `Counter` can take some iterable to constructor;
+
 0.2.0
 -----
 

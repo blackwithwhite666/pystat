@@ -46,8 +46,16 @@ cdef class Counter(object):
         if self._c_counter is not NULL:
             free(self._c_counter)
 
+    def __init__(self, l=None):
+        if l is not None:
+            self.update(l)
+
     cpdef add(self, double sample=1.0):
         assert counter_add_sample(self._c_counter, sample) == 0
+
+    cpdef update(self, l):
+        for i in l:
+            self.add(i)
 
     cdef tuple dump(self):
         return (

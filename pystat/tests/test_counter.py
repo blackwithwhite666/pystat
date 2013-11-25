@@ -58,3 +58,11 @@ class TestCounter(TestCase):
         self.assertEqual(14, int(c3))
         self.assertEqual(1, c3.min)
         self.assertEqual(6, c3.max)
+
+    def test_init(self):
+        c = Counter([1, 2, 3])
+        self.assertEqual(3, len(c))
+        self.assertEqual(6, int(c))
+        self.assertEqual(1, c.min)
+        self.assertEqual(3, c.max)
+
