@@ -122,6 +122,11 @@ def prepare_sources(sources):
 
 
 modules = {
+    'plain_counter': dict(
+        sources=[
+            source_extension('plain_counter'),
+        ],
+    ),
     'counter': dict(
         include_dirs=[os.path.join(here, 'src')],
         sources=[

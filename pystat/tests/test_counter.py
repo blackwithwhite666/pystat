@@ -65,4 +65,3 @@ class TestCounter(TestCase):
         self.assertEqual(6, int(c))
         self.assertEqual(1, c.min)
         self.assertEqual(3, c.max)
-

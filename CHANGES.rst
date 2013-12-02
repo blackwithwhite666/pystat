@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.2.2
+-----
+
+- `PlainCounter` implementation;
+
 0.2.1
 -----
 
