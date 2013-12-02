@@ -52,10 +52,12 @@ cdef class Counter(object):
 
     cpdef add(self, double sample=1.0):
         assert counter_add_sample(self._c_counter, sample) == 0
+        return self
 
     cpdef update(self, l):
         for i in l:
             self.add(i)
+        return self
 
     cdef tuple dump(self):
         return (

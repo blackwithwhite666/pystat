@@ -25,9 +25,11 @@ cdef class PlainCounter(object):
 
     cpdef add(self):
         self._count += 1
+        return self
 
     cpdef update(self, l):
         self._count += len(l)
+        return self
 
     cdef object dump(self):
         return self._count

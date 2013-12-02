@@ -9,10 +9,10 @@ from pystat.tests.base import TestCase
 from pystat.plain_counter import PlainCounter
 
 
-class TestCounter(TestCase):
+class TestPlainCounter(TestCase):
 
     def setUp(self):
-        super(TestCounter, self).setUp()
+        super(TestPlainCounter, self).setUp()
         self.counter = PlainCounter()
 
     def test_add(self):
@@ -42,3 +42,8 @@ class TestCounter(TestCase):
     def test_init(self):
         c = PlainCounter([1, 2, 3])
         self.assertEqual(3, len(c))
+
+    def test_fluent(self):
+        c = PlainCounter()
+        self.assertIs(c, c.add().add())
+        self.assertEqual(2, len(c))

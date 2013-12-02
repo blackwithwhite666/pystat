@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.2.3
+-----
+
+- Support for fluent interface;
+
 0.2.2
 -----
 

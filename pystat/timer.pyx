@@ -59,6 +59,7 @@ cdef class Timer(object):
 
     def add(self, double sample):
         assert timer_add_sample(self._c_timer, sample) == 0
+        return self
 
     def query(self, double quantile=0.95):
         if quantile not in self._quantiles:
