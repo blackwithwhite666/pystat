@@ -47,3 +47,18 @@ class TestPlainCounter(TestCase):
         c = PlainCounter()
         self.assertIs(c, c.add().add())
         self.assertEqual(2, len(c))
+
+    def test_overflow(self):
+        c = PlainCounter()
+        c.load(11111111111111111111)
+        with self.assertRaises(OverflowError):
+            len(c)
+
+    def test_load(self):
+        c = PlainCounter()
+        c.load(5)
+        self.assertEqual(5, len(c))
+
+    def test_dump(self):
+        c = PlainCounter([1])
+        self.assertEqual(1, c.dump())

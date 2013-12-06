@@ -59,7 +59,7 @@ cdef class Counter(object):
             self.add(i)
         return self
 
-    cdef tuple dump(self):
+    cpdef tuple dump(self):
         return (
             self._c_counter.count,
             self._c_counter.sum,
@@ -68,12 +68,13 @@ cdef class Counter(object):
             self._c_counter.max,
         )
 
-    cdef load(self, tuple t):
+    cpdef load(self, tuple t):
         self._c_counter.count = t[0]
         self._c_counter.sum = t[1]
         self._c_counter.squared_sum = t[2]
         self._c_counter.min = t[3]
         self._c_counter.max = t[4]
+        return self
 
     def union(self, Counter other):
         """Return union of two counters."""

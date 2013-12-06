@@ -70,3 +70,9 @@ class TestCounter(TestCase):
         c = Counter()
         self.assertIs(c, c.add().add())
         self.assertEqual(2, len(c))
+
+    def test_dump_load(self):
+        c = Counter()
+        c.add().add()
+        v = Counter().load(c.dump())
+        self.assertEqual(2, len(v))

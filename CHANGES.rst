@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.2.4
+-----
+
+- Add support for load and dump;
+- Check for overflow in __len__;
+
 0.2.3
 -----
 

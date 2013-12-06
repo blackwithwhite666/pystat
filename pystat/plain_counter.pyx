@@ -1,5 +1,6 @@
 cimport cython
 
+
 cdef extern from "stdint.h" nogil:
 
     ctypedef unsigned long uint64_t
@@ -31,11 +32,12 @@ cdef class PlainCounter(object):
         self._count += len(l)
         return self
 
-    cdef object dump(self):
+    cpdef object dump(self):
         return self._count
 
-    cdef load(self, object count):
+    cpdef load(self, object count):
         self._count = count
+        return self
 
     def union(self, PlainCounter other):
         """Return union of two counters."""
@@ -47,7 +49,8 @@ cdef class PlainCounter(object):
         return self.union(other)
 
     def __len__(self):
-        return self._count
+        cdef object count = self._count
+        return count
 
     def __reduce__(self):
         return (recreate_counter, (self.dump(), ))
